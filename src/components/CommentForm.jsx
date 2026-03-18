@@ -1,16 +1,28 @@
-function CommentForm({ onSubmit }) {
+import { useState } from 'react'
+
+function CommentForm({ onSubmit, busy = false, initialValue = '', submitLabel = 'Publier' }) {
+  const [content, setContent] = useState(initialValue)
+
   function handleSubmit(event) {
     event.preventDefault()
-
-    const formData = new FormData(event.currentTarget)
-    onSubmit?.({ content: formData.get('content') })
-    event.currentTarget.reset()
+    onSubmit?.(content, () => setContent(''))
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <textarea name="content" placeholder="Ajouter un commentaire" />
-      <button type="submit">Commenter</button>
+    <form className="stack-form compact-form" onSubmit={handleSubmit}>
+      <label className="field">
+        <span>Commentaire</span>
+        <textarea
+          rows="4"
+          value={content}
+          onChange={(event) => setContent(event.target.value)}
+          placeholder="Ajouter un commentaire"
+          required
+        />
+      </label>
+      <button className="button" type="submit" disabled={busy}>
+        {busy ? 'Envoi...' : submitLabel}
+      </button>
     </form>
   )
 }

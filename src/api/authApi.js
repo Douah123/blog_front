@@ -1,5 +1,17 @@
 import apiClient from './axios.js'
 
-export const login = (credentials) => apiClient.post('/auth/login', credentials)
-export const register = (payload) => apiClient.post('/auth/register', payload)
-export const getProfile = () => apiClient.get('/auth/me')
+export function login(credentials) {
+  return apiClient.post('/auth/login', credentials)
+}
+
+export function register(payload) {
+  return apiClient.post('/auth/register', payload)
+}
+
+export function getProfile(token) {
+  return apiClient.get('/auth/me', { token })
+}
+
+export function logout(token) {
+  return apiClient.post('/auth/logout', {}, { token })
+}

@@ -1,16 +1,30 @@
-function Pagination({ page = 1, totalPages = 1, onPrevious, onNext }) {
+function Pagination({ pagination, onPageChange }) {
+  if (!pagination || pagination.pages <= 1) {
+    return null
+  }
+
   return (
-    <nav aria-label="Pagination">
-      <button onClick={onPrevious} disabled={page <= 1} type="button">
+    <div className="pagination">
+      <button
+        className="button button-secondary"
+        type="button"
+        disabled={pagination.page <= 1}
+        onClick={() => onPageChange(pagination.page - 1)}
+      >
         Precedent
       </button>
-      <span>
-        Page {page} / {totalPages}
+      <span className="pagination-label">
+        Page {pagination.page} sur {pagination.pages}
       </span>
-      <button onClick={onNext} disabled={page >= totalPages} type="button">
+      <button
+        className="button button-secondary"
+        type="button"
+        disabled={pagination.page >= pagination.pages}
+        onClick={() => onPageChange(pagination.page + 1)}
+      >
         Suivant
       </button>
-    </nav>
+    </div>
   )
 }
 

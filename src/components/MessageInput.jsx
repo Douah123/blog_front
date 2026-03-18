@@ -1,15 +1,26 @@
-function MessageInput({ onSend }) {
+import { useState } from 'react'
+
+function MessageInput({ onSend, disabled = false }) {
+  const [content, setContent] = useState('')
+
   function handleSubmit(event) {
     event.preventDefault()
-    const formData = new FormData(event.currentTarget)
-    onSend?.(formData.get('message'))
-    event.currentTarget.reset()
+    onSend(content).then(() => setContent(''))
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input name="message" placeholder="Votre message" />
-      <button type="submit">Envoyer</button>
+    <form className="message-input" onSubmit={handleSubmit}>
+      <textarea
+        rows="3"
+        value={content}
+        onChange={(event) => setContent(event.target.value)}
+        placeholder="Écrire un message"
+        disabled={disabled}
+        required
+      />
+      <button className="button" type="submit" disabled={disabled}>
+        Envoyer
+      </button>
     </form>
   )
 }

@@ -1,3 +1,4 @@
+import './App.css'
 import { AuthProvider } from './context/AuthContext.jsx'
 import Navbar from './components/Navbar.jsx'
 import AppRoutes from './routes/AppRoutes.jsx'
@@ -5,7 +6,7 @@ import AppRoutes from './routes/AppRoutes.jsx'
 function App() {
   return (
     <AuthProvider>
-      <div className="app-shell">
+      <div className="app-shell app-layout">
         <Navbar />
         <AppRoutes />
       </div>

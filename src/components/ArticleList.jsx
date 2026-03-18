@@ -1,13 +1,23 @@
 import ArticleCard from './ArticleCard.jsx'
 
-function ArticleList({ articles = [] }) {
+function ArticleList({ articles, emptyMessage, onLikeToggle, busyArticleId, renderActions, showExcerpt = true }) {
+  if (!articles.length) {
+    return <div className="panel empty-state">{emptyMessage}</div>
+  }
+
   return (
-    <section>
-      <h2>Articles</h2>
+    <div className="list-stack">
       {articles.map((article) => (
-        <ArticleCard key={article.id} article={article} />
+        <ArticleCard
+          key={article.id}
+          article={article}
+          showExcerpt={showExcerpt}
+          onLikeToggle={onLikeToggle ? () => onLikeToggle(article) : undefined}
+          likeBusy={busyArticleId === article.id}
+          actions={renderActions ? renderActions(article) : null}
+        />
       ))}
-    </section>
+    </div>
   )
 }
 

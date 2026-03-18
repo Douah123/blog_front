@@ -1,13 +1,22 @@
 import FriendCard from './FriendCard.jsx'
 
-function FriendList({ friends = [] }) {
+function FriendList({ friends, onRemove, onBlock, onUnblock }) {
+  if (!friends.length) {
+    return <div className="panel empty-state">Votre liste d'amis est vide.</div>
+  }
+
   return (
-    <section>
-      <h2>Liste d'amis</h2>
+    <div className="list-stack">
       {friends.map((friend) => (
-        <FriendCard key={friend.id} friend={friend} />
+        <FriendCard
+          key={friend.id}
+          friend={friend}
+          onRemove={onRemove}
+          onBlock={onBlock}
+          onUnblock={onUnblock}
+        />
       ))}
-    </section>
+    </div>
   )
 }
 

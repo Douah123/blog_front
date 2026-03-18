@@ -1,14 +1,14 @@
-function UserSearch({ onSearch }) {
-  function handleSubmit(event) {
-    event.preventDefault()
-    const formData = new FormData(event.currentTarget)
-    onSearch?.(formData.get('query'))
-  }
-
+function UserSearch({ value, onChange, onSubmit, busy = false }) {
   return (
-    <form onSubmit={handleSubmit}>
-      <input name="query" placeholder="Rechercher un utilisateur" />
-      <button type="submit">Rechercher</button>
+    <form className="search-form" onSubmit={onSubmit}>
+      <input
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder="Rechercher par username ou nom complet"
+      />
+      <button className="button" type="submit" disabled={busy}>
+        {busy ? 'Recherche...' : 'Rechercher'}
+      </button>
     </form>
   )
 }
