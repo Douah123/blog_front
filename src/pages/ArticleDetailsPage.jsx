@@ -8,6 +8,10 @@ import CommentList from '../components/CommentList.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import { getErrorMessage } from '../utils/app.js'
 
+function countComments(items) {
+  return items.reduce((total, item) => total + 1 + countComments(item.replies ?? []), 0)
+}
+
 function ArticleDetailsPage({ params }) {
   const { token, user } = useAuth()
   const [article, setArticle] = useState(null)
@@ -15,8 +19,24 @@ function ArticleDetailsPage({ params }) {
   const [likes, setLikes] = useState([])
   const [loading, setLoading] = useState(true)
   const [commentBusy, setCommentBusy] = useState(false)
+  const [replyBusyId, setReplyBusyId] = useState(null)
   const [likeBusy, setLikeBusy] = useState(false)
   const [error, setError] = useState('')
+
+  async function refreshComments() {
+    const commentsResponse = await getCommentsByArticle(token, params.articleId, { page: 1, per_page: 50 })
+    const nextComments = commentsResponse.items ?? []
+    setComments(nextComments)
+    setArticle((current) =>
+      current
+        ? {
+            ...current,
+            comments_count: countComments(nextComments),
+          }
+        : current,
+    )
+    return nextComments
+  }
 
   useEffect(() => {
     let active = true
@@ -31,8 +51,12 @@ function ArticleDetailsPage({ params }) {
           return
         }
 
-        setArticle(articleResponse.article)
-        setComments(commentsResponse.items ?? [])
+        const nextComments = commentsResponse.items ?? []
+        setArticle({
+          ...articleResponse.article,
+          comments_count: countComments(nextComments),
+        })
+        setComments(nextComments)
         setLikes(likesResponse.likes ?? [])
       })
       .catch((err) => {
@@ -56,9 +80,8 @@ function ArticleDetailsPage({ params }) {
     setError('')
 
     try {
-      const response = await createComment(token, { article_id: params.articleId, content })
-      setComments((current) => [response.comment, ...current])
-      setArticle((current) => ({ ...current, comments_count: (current.comments_count ?? 0) + 1 }))
+      await createComment(token, { article_id: params.articleId, content })
+      await refreshComments()
       reset()
     } catch (err) {
       setError(getErrorMessage(err, 'Commentaire impossible.'))
@@ -67,23 +90,39 @@ function ArticleDetailsPage({ params }) {
     }
   }
 
+  async function handleReplySubmit(parentCommentId, content) {
+    setReplyBusyId(parentCommentId)
+    setError('')
+
+    try {
+      await createComment(token, {
+        article_id: params.articleId,
+        content,
+        parent_comment_id: parentCommentId,
+      })
+      await refreshComments()
+    } catch (err) {
+      setError(getErrorMessage(err, 'Reponse impossible.'))
+      throw err
+    } finally {
+      setReplyBusyId(null)
+    }
+  }
+
   async function handleCommentUpdate(commentId, content) {
     try {
-      const response = await updateComment(token, commentId, { content })
-      setComments((current) => current.map((item) => (item.id === commentId ? response.comment : item)))
+      await updateComment(token, commentId, { content })
+      await refreshComments()
     } catch (err) {
       setError(getErrorMessage(err, 'Modification du commentaire impossible.'))
+      throw err
     }
   }
 
   async function handleCommentDelete(commentId) {
     try {
       await deleteComment(token, commentId)
-      setComments((current) => current.filter((item) => item.id !== commentId))
-      setArticle((current) => ({
-        ...current,
-        comments_count: Math.max((current.comments_count ?? 1) - 1, 0),
-      }))
+      await refreshComments()
     } catch (err) {
       setError(getErrorMessage(err, 'Suppression du commentaire impossible.'))
     }
@@ -126,7 +165,7 @@ function ArticleDetailsPage({ params }) {
   return (
     <section className="page-grid">
       {error ? <p className="inline-error">{error}</p> : null}
-      {loading ? <div className="panel">Chargement de l’article...</div> : null}
+      {loading ? <div className="panel">Chargement de l'article...</div> : null}
 
       {!loading && article ? (
         <>
@@ -134,7 +173,7 @@ function ArticleDetailsPage({ params }) {
 
           <section className="panel">
             <div className="section-heading">
-              <h2>Lecteurs ayant aimé</h2>
+              <h2>Lecteurs ayant aime</h2>
               <span className="muted">{likes.length} personnes</span>
             </div>
             {likes.length ? (
@@ -153,14 +192,21 @@ function ArticleDetailsPage({ params }) {
           <section className="panel">
             <div className="section-heading">
               <h2>Commentaires</h2>
+              <span className="muted">{article.comments_count ?? countComments(comments)} messages</span>
             </div>
             <CommentList
               comments={comments}
               currentUserId={user?.id}
               onUpdate={handleCommentUpdate}
               onDelete={handleCommentDelete}
+              onReply={handleReplySubmit}
+              replyBusyId={replyBusyId}
             />
-            {article.allow_comments ? <CommentForm onSubmit={handleCommentSubmit} busy={commentBusy} /> : <p className="muted">Les commentaires sont fermés sur cet article.</p>}
+            {article.allow_comments ? (
+              <CommentForm onSubmit={handleCommentSubmit} busy={commentBusy} />
+            ) : (
+              <p className="muted">Les commentaires sont fermes sur cet article.</p>
+            )}
           </section>
         </>
       ) : null}

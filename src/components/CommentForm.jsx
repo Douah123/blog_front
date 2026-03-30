@@ -1,6 +1,15 @@
 import { useState } from 'react'
 
-function CommentForm({ onSubmit, busy = false, initialValue = '', submitLabel = 'Publier' }) {
+function CommentForm({
+  onSubmit,
+  busy = false,
+  initialValue = '',
+  submitLabel = 'Publier',
+  label = 'Commentaire',
+  placeholder = 'Ajouter un commentaire',
+  rows = 4,
+  className = '',
+}) {
   const [content, setContent] = useState(initialValue)
 
   function handleSubmit(event) {
@@ -9,14 +18,14 @@ function CommentForm({ onSubmit, busy = false, initialValue = '', submitLabel = 
   }
 
   return (
-    <form className="stack-form compact-form" onSubmit={handleSubmit}>
+    <form className={`stack-form compact-form ${className}`.trim()} onSubmit={handleSubmit}>
       <label className="field">
-        <span>Commentaire</span>
+        <span>{label}</span>
         <textarea
-          rows="4"
+          rows={rows}
           value={content}
           onChange={(event) => setContent(event.target.value)}
-          placeholder="Ajouter un commentaire"
+          placeholder={placeholder}
           required
         />
       </label>

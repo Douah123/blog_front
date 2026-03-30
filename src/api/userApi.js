@@ -54,3 +54,7 @@ export function uploadMyAvatar(token, file) {
   formData.append('avatar', file)
   return apiClient.post('/users/me/avatar', formData, { token })
 }
+
+export function updateMyProfile(token, payload) {
+  return apiClient.put('/users/me', payload, { token })
+}

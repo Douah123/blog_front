@@ -1,21 +1,32 @@
+﻿@import "tailwindcss";
+
 :root {
   font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
   line-height: 1.5;
   font-weight: 400;
-  color: #2f261d;
+  color: #0f172a;
   background:
-    radial-gradient(circle at top left, rgba(212, 198, 174, 0.22), transparent 28%),
-    linear-gradient(180deg, #faf6f0 0%, #f5efe7 100%);
+    radial-gradient(circle at 18% 8%, rgba(59, 130, 246, 0.08), transparent 34%),
+    radial-gradient(circle at 90% 4%, rgba(15, 23, 42, 0.05), transparent 30%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  --ink-strong: #2f261d;
-  --ink-soft: #6c5c4c;
-  --surface: rgba(255, 252, 247, 0.9);
-  --surface-alt: #f1e9df;
-  --border-color: #ddd0bf;
-  --accent: #7f5f3b;
+  --ink-strong: #0f172a;
+  --ink-soft: #475569;
+  --surface: rgba(255, 255, 255, 0.86);
+  --surface-alt: #eef2f7;
+  --border-color: #d6e0ea;
+  --accent: #2563eb;
+  --accent-strong: #1d4ed8;
+  --primary-button: #1f3b57;
+  --primary-button-hover: #1a3148;
+  --danger: #b42318;
+  --success: #166534;
+  --badge-bg: #1f3b57;
+  --shadow-soft: 0 10px 26px rgba(15, 23, 42, 0.08);
+  
 }
 
 * {
@@ -23,6 +34,7 @@
 }
 
 html {
+  font-size: 15px;
   scroll-behavior: smooth;
 }
 
@@ -30,6 +42,14 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+}
+
+body,
+#root {
+  background:
+    radial-gradient(circle at 18% 8%, rgba(59, 130, 246, 0.08), transparent 34%),
+    radial-gradient(circle at 90% 4%, rgba(15, 23, 42, 0.05), transparent 30%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
 }
 
 button,
@@ -57,3 +77,10 @@ h3,
 p {
   margin-top: 0;
 }
+
+h1,
+h2,
+h3 {
+  line-height: 1.1;
+}
+

@@ -17,7 +17,7 @@ function CreateArticlePage() {
       const response = await createArticle(token, values)
       navigateTo(`/articles/${response.article.id}`)
     } catch (err) {
-      setError(getErrorMessage(err, 'Création impossible.'))
+      setError(getErrorMessage(err, 'Creation impossible.'))
     } finally {
       setBusy(false)
     }
@@ -29,6 +29,7 @@ function CreateArticlePage() {
         <div>
           <p className="eyebrow">Redaction</p>
           <h1>Nouvel article</h1>
+          <p className="muted">Une mise en page simple pour rediger sans distraction.</p>
         </div>
       </div>
       {error ? <p className="inline-error">{error}</p> : null}

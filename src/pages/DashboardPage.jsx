@@ -81,10 +81,10 @@ function DashboardPage() {
         <div>
           <p className="eyebrow">Accueil</p>
           <h1>Fil de publications</h1>
-          <p className="muted">Vos articles et ceux de vos amis.</p>
+          <p className="muted">Vos articles et ceux de vos amis, presentes dans un format plus clair et plus sobre.</p>
         </div>
         <button className="button" type="button" onClick={() => navigateTo('/articles/new')}>
-          Écrire un article
+          Ecrire un article
         </button>
       </div>
 
@@ -95,7 +95,7 @@ function DashboardPage() {
         <>
           <ArticleList
             articles={articles}
-            emptyMessage="Aucun article à afficher pour le moment."
+            emptyMessage="Aucun article a afficher pour le moment."
             onLikeToggle={handleLikeToggle}
             busyArticleId={busyArticleId}
           />

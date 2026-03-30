@@ -72,14 +72,24 @@ const icons = {
     </>
   ),
   like: (
-    <path
-      d="M12 19.5s-6.75-4.2-6.75-9.35A3.9 3.9 0 0 1 9.2 6.2c1.18 0 2.22.5 2.8 1.45.58-.95 1.62-1.45 2.8-1.45a3.9 3.9 0 0 1 3.95 3.95C18.75 15.3 12 19.5 12 19.5Z"
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.6"
-    />
+    <>
+      <path
+        d="M10 10.25 11.6 5.9A1.7 1.7 0 0 1 13.2 4.75c.7 0 1.25.58 1.25 1.3v3.95h3.15c1.08 0 1.86 1.02 1.56 2.05l-1.45 5.05a1.75 1.75 0 0 1-1.68 1.27H10"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.6"
+      />
+      <path
+        d="M6 10.25h4v8H6.9A1.15 1.15 0 0 1 5.75 17.1v-5.7A1.15 1.15 0 0 1 6.9 10.25H6Z"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.6"
+      />
+    </>
   ),
 }
 

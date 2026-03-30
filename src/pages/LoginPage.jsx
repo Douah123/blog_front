@@ -27,9 +27,13 @@ function LoginPage() {
   return (
     <section className="auth-layout">
       <form className="panel stack-form auth-form" onSubmit={handleSubmit}>
-        <h2>Connexion</h2>
+        <div className="auth-header">
+          <p className="eyebrow">Bienvenue</p>
+          <h2>Connexion</h2>
+          <p className="auth-note">Retrouvez vos articles, messages et notifications dans un espace epure.</p>
+        </div>
         <label className="field">
-          <span>Email ou nom d’utilisateur</span>
+          <span>Email ou nom d'utilisateur</span>
           <input value={identifier} onChange={(event) => setIdentifier(event.target.value)} required />
         </label>
         <label className="field">
@@ -46,7 +50,7 @@ function LoginPage() {
           {busy ? 'Connexion...' : 'Se connecter'}
         </button>
         <button className="text-button" type="button" onClick={() => navigateTo('/register')}>
-          Créer un compte
+          Creer un compte
         </button>
       </form>
     </section>

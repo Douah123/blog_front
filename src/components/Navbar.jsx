@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getMyChats } from '../api/messageApi.js'
 import { getUnreadCount } from '../api/notificationApi.js'
-import { getFriendRequests, uploadMyAvatar } from '../api/userApi.js'
+import { getFriendRequests } from '../api/userApi.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import {
   getErrorMessage,
@@ -37,12 +37,11 @@ function NavLink({ href, label, badge, icon }) {
 }
 
 function Navbar() {
-  const { isAuthenticated, user, token, logout, refreshProfile } = useAuth()
+  const { isAuthenticated, user, token, logout } = useAuth()
   const [unreadCount, setUnreadCount] = useState(0)
   const [messagesCount, setMessagesCount] = useState(0)
   const [requestsCount, setRequestsCount] = useState(0)
   const [error, setError] = useState('')
-  const [uploading, setUploading] = useState(false)
 
   useEffect(() => {
     if (!isAuthenticated || !token) {
@@ -103,26 +102,6 @@ function Navbar() {
     navigateTo('/login')
   }
 
-  async function handleAvatarChange(event) {
-    const file = event.target.files?.[0]
-    if (!file) {
-      return
-    }
-
-    setUploading(true)
-    setError('')
-
-    try {
-      await uploadMyAvatar(token, file)
-      await refreshProfile()
-    } catch (err) {
-      setError(getErrorMessage(err, "Mise a jour de l'avatar impossible."))
-    } finally {
-      setUploading(false)
-      event.target.value = ''
-    }
-  }
-
   return (
     <aside className="sidebar">
       <div className="sidebar__top">
@@ -130,7 +109,7 @@ function Navbar() {
           <Icon name="article" />
           <span>Bloggo</span>
         </button>
-        <p className="brand-subtitle">Blog personnel, lecture et échanges en petit cercle.</p>
+        <p className="brand-subtitle">Blog personnel, lecture et echanges dans une interface calme et lisible.</p>
       </div>
 
       {isAuthenticated ? (
@@ -151,16 +130,15 @@ function Navbar() {
               <div>
                 <strong>{user?.fullname || user?.username}</strong>
                 <p className="muted">@{user?.username}</p>
+                <p className="muted">Espace personnel</p>
               </div>
             </div>
-            <label className="button button-ghost upload-button">
-              <Icon name="upload" />
-              {uploading ? 'Envoi...' : 'Photo de profil'}
-              <input type="file" accept="image/*" onChange={handleAvatarChange} disabled={uploading} />
-            </label>
+            <button className="button button-ghost" type="button" onClick={() => navigateTo('/profile/edit')}>
+              Modifier le profil
+            </button>
             <button className="button button-secondary" type="button" onClick={handleLogout}>
               <Icon name="logout" />
-              Déconnexion
+              Deconnexion
             </button>
           </div>
         </>

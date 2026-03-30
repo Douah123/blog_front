@@ -89,7 +89,7 @@ function MyArticlesPage() {
         <div>
           <p className="eyebrow">Publication</p>
           <h1>Mes articles</h1>
-          <p className="muted">Retrouvez vos publications, privées comme publiques.</p>
+          <p className="muted">Retrouvez vos publications privees comme publiques dans une presentation plus nette.</p>
         </div>
         <button className="button" type="button" onClick={() => navigateTo('/articles/new')}>
           Nouvel article
@@ -103,7 +103,7 @@ function MyArticlesPage() {
         <>
           <ArticleList
             articles={articles}
-            emptyMessage="Vous n'avez encore publié aucun article."
+            emptyMessage="Vous n'avez encore publie aucun article."
             onLikeToggle={handleLikeToggle}
             busyArticleId={busyArticleId}
             renderActions={(article) => (

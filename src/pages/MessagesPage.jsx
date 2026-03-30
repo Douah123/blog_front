@@ -117,7 +117,10 @@ function MessagesPage({ searchParams }) {
     <section className="messages-layout">
       <aside className="panel messages-sidebar">
         <div className="section-heading">
-          <h1>Messages</h1>
+          <div>
+            <p className="eyebrow">Conversation</p>
+            <h1>Messages</h1>
+          </div>
         </div>
         {loadingChats ? <p className="muted">Chargement...</p> : null}
         <div className="list-stack">
@@ -142,13 +145,16 @@ function MessagesPage({ searchParams }) {
 
       <section className="panel messages-panel">
         {error ? <p className="inline-error">{error}</p> : null}
-        {!selectedUserId ? <p className="muted">Sélectionnez une conversation pour commencer.</p> : null}
+        {!selectedUserId ? <p className="muted">Selectionnez une conversation pour commencer.</p> : null}
         {selectedUserId ? (
           <>
             <div className="section-heading">
               <span className="conversation-heading">
                 <Avatar user={selectedChat || { fullname: selectedName, username: selectedName }} />
-                <h2>{selectedChat?.fullname || selectedName || selectedChat?.username || 'Conversation'}</h2>
+                <div>
+                  <p className="eyebrow">Discussion</p>
+                  <h2>{selectedChat?.fullname || selectedName || selectedChat?.username || 'Conversation'}</h2>
+                </div>
               </span>
             </div>
             {loadingMessages ? <p className="muted">Chargement de la conversation...</p> : <MessageList messages={messages} currentUserId={user?.id} />}

@@ -67,6 +67,7 @@ function NotificationsPage() {
         <div>
           <p className="eyebrow">Suivi</p>
           <h1>Notifications</h1>
+          <p className="muted">Un panneau plus lisible pour les activites recentes.</p>
         </div>
         <button className="button button-secondary" type="button" onClick={handleReadAll}>
           Tout marquer comme lu

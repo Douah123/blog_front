@@ -36,10 +36,12 @@ function RegisterPage() {
   return (
     <section className="auth-layout">
       <form className="panel stack-form auth-form" onSubmit={handleSubmit}>
-        <h2>Inscription</h2>
-        <p className="muted">
-          Mot de passe : 8 caractères minimum, une majuscule initiale et un chiffre.
-        </p>
+        <div className="auth-header">
+          <p className="eyebrow">Inscription</p>
+          <h2>Creer votre espace</h2>
+          <p className="auth-note">Un compte simple pour publier, echanger et suivre votre cercle.</p>
+        </div>
+        <p className="muted">Mot de passe : 8 caracteres minimum, une majuscule initiale et un chiffre.</p>
         <label className="field">
           <span>Username</span>
           <input name="username" value={form.username} onChange={handleChange} required />
@@ -58,10 +60,10 @@ function RegisterPage() {
         </label>
         {error ? <p className="inline-error">{error}</p> : null}
         <button className="button auth-submit" type="submit" disabled={busy}>
-          {busy ? 'Création...' : 'Créer le compte'}
+          {busy ? 'Creation...' : 'Creer le compte'}
         </button>
         <button className="text-button" type="button" onClick={() => navigateTo('/login')}>
-          Retour à la connexion
+          Retour a la connexion
         </button>
       </form>
     </section>

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import QuillTextEditor from './QuillTextEditor.jsx'
 
 const defaultValues = {
   title: '',
@@ -9,6 +10,7 @@ const defaultValues = {
 
 function ArticleForm({ initialValues, onSubmit, submitLabel = 'Enregistrer', busy = false }) {
   const [values, setValues] = useState({ ...defaultValues, ...initialValues })
+  const [contentError, setContentError] = useState('')
 
   function handleChange(event) {
     const { name, value, type, checked } = event.target
@@ -20,6 +22,12 @@ function ArticleForm({ initialValues, onSubmit, submitLabel = 'Enregistrer', bus
 
   function handleSubmit(event) {
     event.preventDefault()
+    if (!values.content.trim()) {
+      setContentError('Le contenu est requis.')
+      return
+    }
+
+    setContentError('')
     onSubmit?.(values)
   }
 
@@ -39,15 +47,19 @@ function ArticleForm({ initialValues, onSubmit, submitLabel = 'Enregistrer', bus
 
       <label className="field">
         <span>Contenu</span>
-        <textarea
-          name="content"
+        <QuillTextEditor
           value={values.content}
-          onChange={handleChange}
+          onChange={(content) => {
+            setValues((current) => ({ ...current, content }))
+            if (contentError && content.trim()) {
+              setContentError('')
+            }
+          }}
           placeholder="Votre article..."
-          rows="14"
-          required
+          minHeight={260}
         />
       </label>
+      {contentError ? <p className="inline-error">{contentError}</p> : null}
 
       <label className="checkbox-field">
         <input

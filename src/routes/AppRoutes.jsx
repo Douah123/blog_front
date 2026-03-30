@@ -13,6 +13,7 @@ import FriendRequestsPage from '../pages/FriendRequestsPage.jsx'
 import FriendsPage from '../pages/FriendsPage.jsx'
 import MessagesPage from '../pages/MessagesPage.jsx'
 import NotificationsPage from '../pages/NotificationsPage.jsx'
+import EditProfilePage from '../pages/EditProfilePage.jsx'
 
 const routes = [
   { pattern: '/', component: DashboardPage, protected: true },
@@ -27,6 +28,7 @@ const routes = [
   { pattern: '/friends', component: FriendsPage, protected: true },
   { pattern: '/messages', component: MessagesPage, protected: true },
   { pattern: '/notifications', component: NotificationsPage, protected: true },
+  { pattern: '/profile/edit', component: EditProfilePage, protected: true },
 ]
 
 function getCurrentRoute() {
