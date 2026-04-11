@@ -1,34 +1,26 @@
 # Blog Frontend
 
-Frontend React/Vite pour une application de blog avec:
-- authentification
-- articles
-- amis
-- messages
-- notifications
+Frontend React avec Vite.
 
-## Lancer le frontend
+## Installation
 
 ```powershell
 npm install
+```
+
+## Lancement
+
+```powershell
 npm run dev
 ```
 
-Le frontend demarre en local sur Vite.
+## Configuration
 
-## API backend
-
-Le frontend appelle l'API definie par `VITE_API_BASE_URL`.
-
-Exemple de fichier `.env`:
+Creer un fichier `.env` :
 
 ```env
 VITE_API_BASE_URL=http://127.0.0.1:5000
 ```
-
-## Backend du projet
-
-Le backend Flask est dans [BlogPersonnel_back](./BlogPersonnel_back/README.md).
 
 ## Build
 
