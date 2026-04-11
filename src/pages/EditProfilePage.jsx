@@ -6,7 +6,8 @@ import { useAuth } from '../context/AuthContext.jsx'
 import { getErrorMessage } from '../utils/app.js'
 
 function EditProfilePage() {
-  const { user, token, refreshProfile } = useAuth()
+  const { user, token, refreshProfile, updateSessionUser } = useAuth()
+  const [passwordFieldsReady, setPasswordFieldsReady] = useState(false)
   const [form, setForm] = useState({
     username: '',
     fullname: '',
@@ -34,6 +35,12 @@ function EditProfilePage() {
     setForm((current) => ({ ...current, [name]: value }))
   }
 
+  function enablePasswordFields() {
+    if (!passwordFieldsReady) {
+      setPasswordFieldsReady(true)
+    }
+  }
+
   async function handleAvatarChange(event) {
     const file = event.target.files?.[0]
     if (!file) {
@@ -45,8 +52,15 @@ function EditProfilePage() {
     setSuccess('')
 
     try {
-      await uploadMyAvatar(token, file)
-      await refreshProfile()
+      const response = await uploadMyAvatar(token, file)
+      const nextUser = response?.user ?? response?.profile ?? response?.data?.user ?? null
+
+      if (nextUser) {
+        updateSessionUser(nextUser)
+      } else {
+        await refreshProfile()
+      }
+
       setSuccess('Photo de profil mise a jour.')
     } catch (err) {
       setError(getErrorMessage(err, "Mise a jour de l'avatar impossible."))
@@ -94,10 +108,19 @@ function EditProfilePage() {
     setBusy(true)
 
     try {
-      await updateMyProfile(token, payload)
-      await refreshProfile()
+      const response = await updateMyProfile(token, payload)
+      const nextUser = response?.user ?? response?.profile ?? response?.data?.user ?? payload
+
+      updateSessionUser({
+        ...user,
+        ...nextUser,
+      })
+
       setForm((current) => ({
         ...current,
+        username: nextUser.username ?? current.username,
+        fullname: nextUser.fullname ?? current.fullname,
+        email: nextUser.email ?? current.email,
         currentPassword: '',
         newPassword: '',
         confirmPassword: '',
@@ -165,7 +188,9 @@ function EditProfilePage() {
               value={form.currentPassword}
               onChange={handleChange}
               placeholder="Obligatoire si vous changez le mot de passe"
-              autoComplete="current-password"
+              autoComplete="new-password"
+              readOnly={!passwordFieldsReady}
+              onFocus={enablePasswordFields}
             />
           </label>
 
@@ -178,6 +203,8 @@ function EditProfilePage() {
               onChange={handleChange}
               placeholder="Laisser vide pour conserver l'actuel"
               autoComplete="new-password"
+              readOnly={!passwordFieldsReady}
+              onFocus={enablePasswordFields}
             />
           </label>
 
@@ -190,6 +217,8 @@ function EditProfilePage() {
               onChange={handleChange}
               placeholder="A renseigner seulement si vous changez le mot de passe"
               autoComplete="new-password"
+              readOnly={!passwordFieldsReady}
+              onFocus={enablePasswordFields}
             />
           </label>
 

@@ -17,7 +17,6 @@ function MyArticlesPage() {
 
   useEffect(() => {
     let active = true
-    setLoading(true)
     setError('')
 
     getMyArticles(token, { page, per_page: 10 })
@@ -97,9 +96,9 @@ function MyArticlesPage() {
       </div>
 
       {error ? <p className="inline-error">{error}</p> : null}
-      {loading ? <div className="panel">Chargement...</div> : null}
+      {loading && articles.length === 0 ? <div className="panel">Chargement...</div> : null}
 
-      {!loading ? (
+      {!loading || articles.length > 0 ? (
         <>
           <ArticleList
             articles={articles}

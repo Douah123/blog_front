@@ -17,7 +17,6 @@ function DashboardPage() {
 
   useEffect(() => {
     let active = true
-    setLoading(true)
     setError('')
 
     getFeed(token, { page, per_page: 10 })
@@ -89,9 +88,9 @@ function DashboardPage() {
       </div>
 
       {error ? <p className="inline-error">{error}</p> : null}
-      {loading ? <div className="panel">Chargement du fil...</div> : null}
+      {loading && articles.length === 0 ? <div className="panel">Chargement du fil...</div> : null}
 
-      {!loading ? (
+      {!loading || articles.length > 0 ? (
         <>
           <ArticleList
             articles={articles}

@@ -12,6 +12,52 @@ function countComments(items) {
   return items.reduce((total, item) => total + 1 + countComments(item.replies ?? []), 0)
 }
 
+function appendReply(items, parentCommentId, reply) {
+  return items.map((item) => {
+    if (item.id === parentCommentId) {
+      return {
+        ...item,
+        replies: [...(item.replies ?? []), reply],
+      }
+    }
+
+    if (!item.replies?.length) {
+      return item
+    }
+
+    return {
+      ...item,
+      replies: appendReply(item.replies, parentCommentId, reply),
+    }
+  })
+}
+
+function updateCommentInTree(items, commentId, content) {
+  return items.map((item) => {
+    if (item.id === commentId) {
+      return { ...item, content }
+    }
+
+    if (!item.replies?.length) {
+      return item
+    }
+
+    return {
+      ...item,
+      replies: updateCommentInTree(item.replies, commentId, content),
+    }
+  })
+}
+
+function removeCommentFromTree(items, commentId) {
+  return items
+    .filter((item) => item.id !== commentId)
+    .map((item) => ({
+      ...item,
+      replies: item.replies?.length ? removeCommentFromTree(item.replies, commentId) : item.replies,
+    }))
+}
+
 function ArticleDetailsPage({ params }) {
   const { token, user } = useAuth()
   const [article, setArticle] = useState(null)
@@ -80,8 +126,23 @@ function ArticleDetailsPage({ params }) {
     setError('')
 
     try {
-      await createComment(token, { article_id: params.articleId, content })
-      await refreshComments()
+      const response = await createComment(token, { article_id: params.articleId, content })
+      const nextComment = response?.comment ?? response?.data?.comment ?? null
+
+      if (nextComment) {
+        setComments((current) => [...current, nextComment])
+        setArticle((current) =>
+          current
+            ? {
+                ...current,
+                comments_count: (current.comments_count ?? 0) + 1,
+              }
+            : current,
+        )
+      } else {
+        await refreshComments()
+      }
+
       reset()
     } catch (err) {
       setError(getErrorMessage(err, 'Commentaire impossible.'))
@@ -95,12 +156,26 @@ function ArticleDetailsPage({ params }) {
     setError('')
 
     try {
-      await createComment(token, {
+      const response = await createComment(token, {
         article_id: params.articleId,
         content,
         parent_comment_id: parentCommentId,
       })
-      await refreshComments()
+      const nextReply = response?.comment ?? response?.data?.comment ?? null
+
+      if (nextReply) {
+        setComments((current) => appendReply(current, parentCommentId, nextReply))
+        setArticle((current) =>
+          current
+            ? {
+                ...current,
+                comments_count: (current.comments_count ?? 0) + 1,
+              }
+            : current,
+        )
+      } else {
+        await refreshComments()
+      }
     } catch (err) {
       setError(getErrorMessage(err, 'Reponse impossible.'))
       throw err
@@ -112,7 +187,7 @@ function ArticleDetailsPage({ params }) {
   async function handleCommentUpdate(commentId, content) {
     try {
       await updateComment(token, commentId, { content })
-      await refreshComments()
+      setComments((current) => updateCommentInTree(current, commentId, content))
     } catch (err) {
       setError(getErrorMessage(err, 'Modification du commentaire impossible.'))
       throw err
@@ -122,7 +197,18 @@ function ArticleDetailsPage({ params }) {
   async function handleCommentDelete(commentId) {
     try {
       await deleteComment(token, commentId)
-      await refreshComments()
+      setComments((current) => {
+        const nextComments = removeCommentFromTree(current, commentId)
+        setArticle((articleCurrent) =>
+          articleCurrent
+            ? {
+                ...articleCurrent,
+                comments_count: countComments(nextComments),
+              }
+            : articleCurrent,
+        )
+        return nextComments
+      })
     } catch (err) {
       setError(getErrorMessage(err, 'Suppression du commentaire impossible.'))
     }
@@ -147,13 +233,26 @@ function ArticleDetailsPage({ params }) {
         setLikes((current) => current.filter((item) => item.user_id !== user.id))
       } else {
         await likeArticle(token, article.id)
-        const likesResponse = await getArticleLikes(token, article.id, { page: 1, per_page: 50 })
         setArticle((current) => ({
           ...current,
           liked_by_current_user: true,
-          likes_count: likesResponse.likes_count ?? (current.likes_count ?? 0) + 1,
+          likes_count: (current.likes_count ?? 0) + 1,
         }))
-        setLikes(likesResponse.likes ?? [])
+        setLikes((current) => {
+          if (!user || current.some((item) => item.user_id === user.id)) {
+            return current
+          }
+
+          return [
+            ...current,
+            {
+              id: `optimistic-like-${user.id}`,
+              user_id: user.id,
+              fullname: user.fullname,
+              username: user.username,
+            },
+          ]
+        })
       }
     } catch (err) {
       setError(getErrorMessage(err, "Action sur le like impossible."))

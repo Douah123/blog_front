@@ -29,6 +29,11 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(storedSession?.token ?? '')
   const [isInitializing, setIsInitializing] = useState(Boolean(storedSession?.token))
 
+  function syncSession(nextToken, nextUser) {
+    setUser(nextUser)
+    writeSession({ token: nextToken, user: nextUser })
+  }
+
   useEffect(() => {
     if (!token) {
       return
@@ -42,8 +47,7 @@ export function AuthProvider({ children }) {
           return
         }
 
-        setUser(response.user)
-        writeSession({ token, user: response.user })
+        syncSession(token, response.user)
       })
       .catch(() => {
         if (!active) {
@@ -67,17 +71,15 @@ export function AuthProvider({ children }) {
 
   async function login(credentials) {
     const response = await loginRequest(credentials)
-    setUser(response.user)
     setToken(response.access_token)
-    writeSession({ token: response.access_token, user: response.user })
+    syncSession(response.access_token, response.user)
     return response.user
   }
 
   async function register(payload) {
     const response = await registerRequest(payload)
-    setUser(response.user)
     setToken(response.access_token)
-    writeSession({ token: response.access_token, user: response.user })
+    syncSession(response.access_token, response.user)
     return response.user
   }
 
@@ -87,9 +89,16 @@ export function AuthProvider({ children }) {
     }
 
     const response = await getProfile(token)
-    setUser(response.user)
-    writeSession({ token, user: response.user })
+    syncSession(token, response.user)
     return response.user
+  }
+
+  function updateSessionUser(nextUser) {
+    if (!token || !nextUser) {
+      return
+    }
+
+    syncSession(token, nextUser)
   }
 
   async function logout() {
@@ -117,6 +126,7 @@ export function AuthProvider({ children }) {
         login,
         register,
         refreshProfile,
+        updateSessionUser,
         logout,
       }}
     >

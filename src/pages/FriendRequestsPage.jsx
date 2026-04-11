@@ -71,7 +71,6 @@ function FriendRequestsPage() {
   }
 
   function handlePageChange(nextPage) {
-    setLoading(true)
     setError('')
     setPage(nextPage)
   }
@@ -85,7 +84,7 @@ function FriendRequestsPage() {
         </div>
       </div>
       {error ? <p className="inline-error">{error}</p> : null}
-      {loading ? <div className="panel">Chargement...</div> : <FriendRequestList requests={requests} onAccept={handleAccept} onReject={handleReject} />}
+      {loading && requests.length === 0 ? <div className="panel">Chargement...</div> : <FriendRequestList requests={requests} onAccept={handleAccept} onReject={handleReject} />}
       <Pagination pagination={pagination} onPageChange={handlePageChange} />
     </section>
   )

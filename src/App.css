@@ -9,8 +9,12 @@
 }
 
 .sidebar {
-  position: static;
-  height: auto;
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100vh;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
   padding: 1.5rem 1.1rem;
   border-right: 1px solid rgba(148, 163, 184, 0.18);
   background:
@@ -620,6 +624,75 @@
   align-items: center;
 }
 
+.notification-card__content,
+.notification-card__actions {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.notification-card__content {
+  min-width: 0;
+  flex: 1;
+}
+
+.notification-card__actions {
+  width: 13.5rem;
+  justify-items: end;
+  align-self: center;
+}
+
+.notification-action-button,
+.notification-toolbar-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.62rem 0.95rem;
+  font-size: 0.96rem;
+  font-weight: 600;
+  min-height: 3.2rem;
+  border-radius: 999px;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  white-space: nowrap;
+}
+
+.notification-action-button {
+  width: 100%;
+}
+
+.notification-toolbar-button {
+  min-width: 13.5rem;
+}
+
+.notification-article {
+  width: 100%;
+  display: grid;
+  gap: 0.28rem;
+  text-align: left;
+  padding: 0.9rem 1rem;
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.26);
+  background: rgba(248, 250, 252, 0.86);
+  color: var(--ink-strong);
+  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.notification-article:hover:not(:disabled) {
+  background: rgba(239, 246, 255, 0.95);
+  border-color: rgba(59, 130, 246, 0.3);
+  transform: translateY(-1px);
+}
+
+.notification-article:disabled {
+  cursor: default;
+}
+
+.notification-article__label {
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #64748b;
+}
+
 .messages-layout {
   align-items: stretch;
 }
@@ -726,7 +799,7 @@
 }
 
 .auth-form {
-  width: min(100%, 33rem);
+  width: min(100%, 29rem);
   margin: 0 auto;
   padding: 1.9rem;
 }
@@ -758,7 +831,8 @@
   .messages-layout,
   .page-heading,
   .article-card__footer,
-  .message-input {
+  .message-input,
+  .notification-card {
     flex-direction: column;
   }
 
@@ -769,6 +843,7 @@
   .sidebar {
     position: static;
     height: auto;
+    overflow: visible;
     border-right: 0;
     border-bottom: 1px solid rgba(148, 163, 184, 0.18);
     background: rgba(15, 23, 42, 0.98);
@@ -807,6 +882,18 @@
   .message-bubble,
   .messages-sidebar {
     max-width: 100%;
+  }
+
+  .notification-card__actions {
+    width: 100%;
+    justify-items: stretch;
+    align-self: stretch;
+  }
+
+  .notification-action-button,
+  .notification-toolbar-button {
+    width: 100%;
+    justify-content: center;
   }
 
   .sidebar {

@@ -88,7 +88,6 @@ function FriendsPage() {
   }
 
   function handlePageChange(nextPage) {
-    setLoading(true)
     setPage(nextPage)
   }
 
@@ -101,7 +100,7 @@ function FriendsPage() {
         </div>
       </div>
       {error ? <p className="inline-error">{error}</p> : null}
-      {loading ? (
+      {loading && friends.length === 0 ? (
         <div className="panel">Chargement...</div>
       ) : (
         <FriendList
